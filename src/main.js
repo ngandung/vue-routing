@@ -24,7 +24,16 @@ const router = createRouter({
             { name: 'team-members', path: ':teamId', component: TeamMember, props: true },
         ]}, //our-domain.com/teams
 
-        { path: '/users', components: {default: UsersList, footer: UserFooter} },
+        { 
+            path: '/users', 
+            components: {default: UsersList, footer: UserFooter},
+            //This is the same as beforeEach but used in router path
+            beforeEnter(to, from, next) {
+                console.log('users beforeEnter');
+                console.log(to, from);
+                next();
+            }
+        },
         { path: '/', redirect: '/teams' },
 
         //if user input link that not list on routes
@@ -32,8 +41,8 @@ const router = createRouter({
        
     ],
     linkActiveClass: 'active',
-    scrollBehavior(to, from, savePositon) {
-        console.log(to, from, savePositon);
+    scrollBehavior(_, _2, savePositon) {
+        //console.log(to, from, savePositon);
         if(savePositon) {
             return savePositon;
         }
@@ -42,6 +51,16 @@ const router = createRouter({
             top: 0
         }
     }
+});
+
+//this function will called before move to othe page by vue Globally
+router.beforeEach(function(to, from, next) {
+    console.log('Global before each');
+    console.log(to, from);
+
+    //next(false) can cancel open next page
+    next();
+    
 });
 
 const app = createApp(App);
